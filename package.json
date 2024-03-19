@@ -2,7 +2,7 @@
   "name": "starter",
   "version": "1.0.0",
   "description": "Learning how to write node code",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon"
   },
@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.18.3"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.0"
   }
 }
