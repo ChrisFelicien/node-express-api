@@ -1,0 +1,15 @@
+{
+  "name": "starter",
+  "version": "1.0.0",
+  "description": "Learning how to write node code",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
