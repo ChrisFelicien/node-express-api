@@ -30,8 +30,6 @@ const createTour = (req, res) => {
 const getSingleTour = (req, res) => {
   const { id } = req.params;
 
-  console.log(typeof id);
-
   const tour = tours.find((tour) => tour.id === id * 1);
 
   if (!tour) {
