@@ -4,6 +4,30 @@ const path = `${__dirname}/../dev-data/data/tours-simple.json`;
 
 const tours = JSON.parse(fs.readFileSync(path, 'utf-8'));
 
+const checkValidId = (req, res, next, val) => {
+  if (val > tours.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: `No tour with id equal to ${val}`,
+    });
+  }
+
+  next();
+};
+
+const checkBodyRequest = (req, res, next) => {
+  const { name, price } = req.body;
+
+  if (!name || !price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Please provide all required values',
+    });
+  }
+
+  next();
+};
+
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -32,13 +56,6 @@ const getSingleTour = (req, res) => {
 
   const tour = tours.find((tour) => tour.id === id * 1);
 
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'No tour with this id',
-    });
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -52,12 +69,6 @@ const updateTour = (req, res) => {
 
   const tour = tours.find((tour) => tour.id === id * 1);
 
-  if (!tour) {
-    return res.json({
-      status: 'fail',
-      message: `No tour with this ${id}`,
-    });
-  }
   res.json({
     status: 'success',
     message: `Tour with id ${id} is updated`,
@@ -68,13 +79,6 @@ const deleteTour = (req, res) => {
   const { id } = req.params;
 
   const tour = tours.find((tour) => tour.id === id * 1);
-
-  if (!tour) {
-    return res.json({
-      status: 'fail',
-      message: `Sorry no tour with  this id`,
-    });
-  }
 
   res.json({
     status: 'success',
@@ -88,4 +92,6 @@ module.exports = {
   getAllTours,
   getSingleTour,
   updateTour,
+  checkValidId,
+  checkBodyRequest,
 };
