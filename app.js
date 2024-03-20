@@ -1,16 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
-const toursRoutes = require('./routes/toursRoutes.js');
-const usersRoutes = require('./routes/usersRoutes.js');
+const toursRouter = require('./routes/toursRoutes.js');
+const usersRouter = require('./routes/usersRoutes.js');
 
 const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/api/v1/tours', toursRoutes);
-app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/tours', toursRouter);
+app.use('/api/v1/users', usersRouter);
 
-const port = 3000;
-
-app.listen(port, () => console.log(`The server is running on port ${port}`));
+module.exports = app;
