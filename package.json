@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon",
-    "dev": "NODE_ENV=production nodemon"
+    "dev": "NODE_ENV=production nodemon",
+    "populate": "nodemon populate.js"
   },
   "keywords": [],
   "author": "",
