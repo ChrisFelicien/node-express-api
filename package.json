@@ -4,13 +4,17 @@
   "description": "Learning how to write node code",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon"
+    "start": "nodemon",
+    "dev": "NODE_ENV=production nodemon"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.18.3",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.2.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
