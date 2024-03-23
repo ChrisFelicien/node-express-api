@@ -12,7 +12,11 @@ const topFiveCheap = (req, res, next) => {
 
 const getAllTours = async (req, res) => {
   try {
-    const features = new APIFeatures(Tour.find(), req.query).filters();
+    const features = new APIFeatures(Tour.find(), req.query)
+      .filters()
+      .sort()
+      .limitFields()
+      .paginate();
 
     const tours = await features.mongoQuery;
 
