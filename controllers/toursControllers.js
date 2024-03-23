@@ -1,4 +1,5 @@
 const Tour = require('../models/toursModel.js');
+const APIFeatures = require('./../utils/APIFeatures.js');
 
 const topFiveCheap = (req, res, next) => {
   // limit=5&sort=price,avgRating,name
@@ -11,48 +12,10 @@ const topFiveCheap = (req, res, next) => {
 
 const getAllTours = async (req, res) => {
   try {
-    console.log(req.query);
-    // 1) Filtering query
-    const queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const features = new APIFeatures(Tour.find(), req.query).filters();
 
-    excludedFields.forEach((item) => delete queryObj[item]);
+    const tours = await features.mongoQuery;
 
-    // 2) Advancing filtering
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|eq)\b/g, (m) => `$${m}`);
-    queryStr = JSON.parse(queryStr);
-
-    let query = Tour.find(queryStr);
-
-    if (req.query.sort) {
-      const sortedBy = req.query.sort.split(',').join(' ');
-      query = query.sort(sortedBy);
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    if (req.query.fields) {
-      const selectedFields = req.query.fields.split(',').join(' ');
-
-      query = query.select(selectedFields);
-    } else {
-      query = query.select('-__v');
-    }
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 5;
-
-    const skip = (page - 1) * limit;
-
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments();
-      if (skip >= numTours) throw new Error('Page not exist');
-    }
-
-    query = query.skip(skip).limit(limit);
-
-    const tours = await query;
     res.status(200).json({
       status: 'success',
       results: tours.length,
