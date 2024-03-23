@@ -1,5 +1,14 @@
 const Tour = require('../models/toursModel.js');
 
+const topFiveCheap = (req, res, next) => {
+  // limit=5&sort=price,avgRating,name
+  req.query.limit = '5';
+  req.query.sort = 'price,avgRating,name';
+  req.query.fields = 'name,price,avgRating';
+
+  next();
+};
+
 const getAllTours = async (req, res) => {
   try {
     console.log(req.query);
@@ -36,6 +45,11 @@ const getAllTours = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw new Error('Page not exist');
+    }
+
     query = query.skip(skip).limit(limit);
 
     const tours = await query;
@@ -49,7 +63,7 @@ const getAllTours = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: 'Fail',
-      message: error,
+      message: error.message,
     });
   }
 };
@@ -139,4 +153,5 @@ module.exports = {
   getAllTours,
   getSingleTour,
   updateTour,
+  topFiveCheap,
 };
