@@ -26,9 +26,17 @@ const getAllTours = async (req, res) => {
     if (req.query.fields) {
       const selectedFields = req.query.fields.split(',').join(' ');
 
-      console.log(selectedFields);
       query = query.select(selectedFields);
+    } else {
+      query = query.select('-__v');
     }
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 5;
+
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
 
     const tours = await query;
     res.status(200).json({
