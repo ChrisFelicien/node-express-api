@@ -153,11 +153,6 @@ const getTourStat = async (req, res) => {
           numTours: -1,
         },
       },
-      // {
-      //   $match: {
-      //     _id: { $ne: 'EASY' },
-      //   },
-      // },
     ]);
 
     res.status(200).json({
@@ -165,6 +160,55 @@ const getTourStat = async (req, res) => {
       data: {
         stats,
       },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+  }
+};
+
+const getMonthlyPlan = async (req, res) => {
+  try {
+    const { year } = req.params;
+
+    const plan = await Tour.aggregate([
+      {
+        $unwind: `$startDates`,
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numToursStart: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: {
+          month: '$_id',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: { numToursStart: -1 },
+      },
+    ]);
+
+    res.status(200).json({
+      plan,
     });
   } catch (error) {
     res.status(400).json({
@@ -182,4 +226,5 @@ module.exports = {
   updateTour,
   topFiveCheap,
   getTourStat,
+  getMonthlyPlan,
 };
